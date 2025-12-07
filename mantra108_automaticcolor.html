@@ -113,26 +113,38 @@ const images = [
 ];
 let imageIndex = 0;
 
+// Fallback image if an image fails to load
+function safeChangeImage() {
+    const imgElement = document.getElementById("mantraImage");
+    const nextImage = images[imageIndex];
+    
+    // Try to load the image
+    const tempImg = new Image();
+    tempImg.onload = function() {
+        imgElement.src = nextImage;
+    }
+    tempImg.onerror = function() {
+        console.warn("Image not found: " + nextImage);
+        imgElement.src = "mantra_image.webp"; // fallback image
+    }
+    tempImg.src = nextImage;
+    
+    imageIndex = (imageIndex + 1) % images.length;
+}
+
 function updateDisplay() {
     document.getElementById("countDisplay").innerText = count + " / " + total;
     document.getElementById("mantraBox").innerText = mantra;
     
-    // Progress bar
     let progressPercent = Math.round((count / total) * 100);
     document.getElementById("progressBar").style.width = progressPercent + "%";
     document.getElementById("progressBar").innerText = progressPercent + "%";
 
-    // Background and font
     const color = colors[count % colors.length];
     const font = fonts[count % fonts.length];
     document.body.style.backgroundColor = color;
     document.getElementById("countDisplay").style.fontFamily = font;
     document.getElementById("mantraBox").style.fontFamily = font;
-}
-
-function changeImage() {
-    imageIndex = (imageIndex + 1) % images.length;
-    document.getElementById("mantraImage").src = images[imageIndex];
 }
 
 function startAuto() {
@@ -144,7 +156,7 @@ function startAuto() {
 audio.addEventListener('ended', () => {
     count++;
     updateDisplay();
-    changeImage();  // rotate image after each repetition
+    safeChangeImage();  // rotate image with fallback
     if (count < total) {
         audio.currentTime = 0;
         audio.play();
@@ -159,7 +171,8 @@ function resetCounter() {
     audio.pause();
     audio.currentTime = 0;
     document.body.style.backgroundColor = "#fdf6e3";
-    document.getElementById("mantraImage").src = images[0]; // reset to first image
+    document.getElementById("mantraImage").src = images[0];
+    imageIndex = 0;
 }
 </script>
 
