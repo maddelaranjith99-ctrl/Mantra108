@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>108 Mantra Auto Counter - Koder</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    padding: 30px;
+    transition: background-color 0.8s, font-family 0.8s;
+  }
+
+  #mantraImage {
+    width: 90%;
+    max-width: 450px;
+    margin-bottom: 25px;
+    border-radius: 20px;
+    background-color: #fff7e6;
+    padding: 10px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  }
+
+  #countDisplay {
+    font-size: 48px;
+    font-weight: bold;
+    margin-top: 20px;
+    color: #2c3e50;
+    transition: font-family 0.8s;
+  }
+
+  #mantraBox {
+    margin-top: 30px;
+    font-size: 36px;
+    line-height: 2;
+    font-weight: bold;
+    color: #2c3e50;
+    white-space: pre-line;
+    transition: font-family 0.8s;
+  }
+
+  #progressContainer {
+    width: 95%;
+    background-color: #ddd;
+    margin: 30px auto;
+    border-radius: 20px;
+    overflow: hidden;
+    height: 60px;
+  }
+  #progressBar {
+    width: 0%;
+    height: 60px;
+    background-color: #27ae60;
+    text-align: center;
+    color: white;
+    line-height: 60px;
+    font-weight: bold;
+    font-size: 24px;
+  }
+
+  button {
+    font-size: 26px;
+    padding: 16px 32px;
+    margin: 12px;
+    border: none;
+    border-radius: 10px;
+    background-color: #3498db;
+    color: white;
+  }
+  button:hover { background-color: #2980b9; cursor: pointer; }
+</style>
+</head>
+<body>
+
+<h2>108 Mantra Auto Counter</h2>
+
+<img id="mantraImage" src="./mantra_image.webp" alt="Mantra Image">
+
+<div id="countDisplay">0 / 108</div>
+
+<div id="progressContainer">
+  <div id="progressBar">0%</div>
+</div>
+
+<div id="mantraBox"></div>
+
+<audio id="mantraAudio" src="./Mantra.m4a" preload="auto"></audio>
+
+<button onclick="startAuto()">Start Auto</button>
+<button onclick="resetCounter()">Reset</button>
+
+<script>
+let count = 0;
+const total = 108;
+const mantra = "దేవకీసుత గోవిందా వాసుదేవ జగత్ పతే \nదేహిమే తనయం కృష్ణ త్వమహం శరణం గతః";
+const audio = document.getElementById("mantraAudio");
+
+const colors = ["#fdf6e3","#fde2e2","#e3f6fd","#e2fde2","#f6e3fd","#fff7e6"];
+const fonts = ["Arial, sans-serif","Georgia, serif","Tahoma, sans-serif","Courier New, monospace","Verdana, sans-serif","Impact, sans-serif"];
+
+function updateDisplay() {
+    document.getElementById("countDisplay").innerText = count + " / " + total;
+    document.getElementById("mantraBox").innerText = mantra;
+    let progressPercent = Math.round((count / total) * 100);
+    document.getElementById("progressBar").style.width = progressPercent + "%";
+    document.getElementById("progressBar").innerText = progressPercent + "%";
+
+    // Change background and font
+    const color = colors[count % colors.length];
+    const font = fonts[count % fonts.length];
+    document.body.style.backgroundColor = color;
+    document.getElementById("countDisplay").style.fontFamily = font;
+    document.getElementById("mantraBox").style.fontFamily = font;
+}
+
+function startAuto() {
+    if (count >= total) { alert("You have completed all 108 repetitions!"); return; }
+    audio.currentTime = 0;
+    audio.play();
+}
+
+// Auto increment when audio ends
+audio.addEventListener('ended', () => {
+    count++;
+    updateDisplay();
+    if (count < total) {
+        audio.currentTime = 0;
+        audio.play();
+    } else {
+        alert("You have completed all 108 repetitions!");
+    }
+});
+
+function resetCounter() {
+    count = 0;
+    updateDisplay();
+    audio.pause();
+    audio.currentTime = 0;
+    document.body.style.backgroundColor = "#fdf6e3"; // reset background
+}
+</script>
+
+</body>
+</html>
