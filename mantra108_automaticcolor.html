@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>108 Mantra Auto Counter - Koder</title>
+<title>108 Mantra Auto Counter</title>
 <style>
   body {
     font-family: Arial, sans-serif;
@@ -47,6 +47,7 @@
     overflow: hidden;
     height: 60px;
   }
+
   #progressBar {
     width: 0%;
     height: 60px;
@@ -74,7 +75,8 @@
 
 <h2>108 Mantra Auto Counter</h2>
 
-<img id="mantraImage" src="./mantra_image.webp" alt="Mantra Image">
+<!-- Rotating Krishna images -->
+<img id="mantraImage" src="krishna1.jpeg" alt="Mantra Image">
 
 <div id="countDisplay">0 / 108</div>
 
@@ -84,7 +86,7 @@
 
 <div id="mantraBox"></div>
 
-<audio id="mantraAudio" src="./Mantra.m4a" preload="auto"></audio>
+<audio id="mantraAudio" src="Mantra.m4a" preload="auto"></audio>
 
 <button onclick="startAuto()">Start Auto</button>
 <button onclick="resetCounter()">Reset</button>
@@ -95,22 +97,42 @@ const total = 108;
 const mantra = "దేవకీసుత గోవిందా వాసుదేవ జగత్ పతే \nదేహిమే తనయం కృష్ణ త్వమహం శరణం గతః";
 const audio = document.getElementById("mantraAudio");
 
+// Background colors and fonts
 const colors = ["#fdf6e3","#fde2e2","#e3f6fd","#e2fde2","#f6e3fd","#fff7e6"];
 const fonts = ["Arial, sans-serif","Georgia, serif","Tahoma, sans-serif","Courier New, monospace","Verdana, sans-serif","Impact, sans-serif"];
+
+// 7 Krishna images (all in same folder)
+const images = [
+  "krishna1.jpeg",
+  "krishna2.jpeg",
+  "krishna3.jpeg",
+  "krishna4.jpeg",
+  "krishna5.jpeg",
+  "krishna6.jpeg",
+  "krishna7.jpeg"
+];
+let imageIndex = 0;
 
 function updateDisplay() {
     document.getElementById("countDisplay").innerText = count + " / " + total;
     document.getElementById("mantraBox").innerText = mantra;
+    
+    // Progress bar
     let progressPercent = Math.round((count / total) * 100);
     document.getElementById("progressBar").style.width = progressPercent + "%";
     document.getElementById("progressBar").innerText = progressPercent + "%";
 
-    // Change background and font
+    // Background and font
     const color = colors[count % colors.length];
     const font = fonts[count % fonts.length];
     document.body.style.backgroundColor = color;
     document.getElementById("countDisplay").style.fontFamily = font;
     document.getElementById("mantraBox").style.fontFamily = font;
+}
+
+function changeImage() {
+    imageIndex = (imageIndex + 1) % images.length;
+    document.getElementById("mantraImage").src = images[imageIndex];
 }
 
 function startAuto() {
@@ -119,10 +141,10 @@ function startAuto() {
     audio.play();
 }
 
-// Auto increment when audio ends
 audio.addEventListener('ended', () => {
     count++;
     updateDisplay();
+    changeImage();  // rotate image after each repetition
     if (count < total) {
         audio.currentTime = 0;
         audio.play();
@@ -136,7 +158,8 @@ function resetCounter() {
     updateDisplay();
     audio.pause();
     audio.currentTime = 0;
-    document.body.style.backgroundColor = "#fdf6e3"; // reset background
+    document.body.style.backgroundColor = "#fdf6e3";
+    document.getElementById("mantraImage").src = images[0]; // reset to first image
 }
 </script>
 
